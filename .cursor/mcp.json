@@ -1,0 +1,17 @@
+{
+    "mcpServers": {
+      "MySQLQueryServer": {
+                "command": "python",
+                "args": [
+                    "E:/GitHubWorkSpace/python_test/mcp/operate_mysql.py"
+                ],
+                "env": {
+                    "MYSQL_HOST": "localhost",
+                    "MYSQL_PORT": "3306",
+                    "MYSQL_USER": "linyihan",
+                    "MYSQL_PASS": "a5555550123",
+                    "MYSQL_DB": "ai_interior_design"
+                }
+            }
+    }
+  }
