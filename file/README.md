@@ -1,10 +1,144 @@
-# 图片路径读取器
+# 文件处理工具集
 
-这是一个用于读取指定目录下所有图片文件路径的Python工具。
+这个目录包含了多个文件处理工具，包括图片路径读取器和图片裁剪工具。
 
-## 功能特性
+## 工具列表
 
-- 支持多种图片格式（jpg, jpeg, png, gif, bmp, webp, svg, ico, tiff, tif, jfif, pjpeg, pjp, avif）
+### 1. 图片路径读取器 (image_reader.py)
+用于读取指定目录下所有图片文件路径的Python工具。
+
+### 2. 图片裁剪工具 (image_cropper.py)
+用于将图片裁剪为指定尺寸的Python工具，特别适用于将宽屏图片裁剪为手机壁纸尺寸。
+
+## 图片裁剪工具
+
+### 功能特性
+
+- 将图片裁剪为1080*1920尺寸（手机壁纸尺寸）
+- 以图片水平方向的中间位置为中心进行裁剪
+- 支持批量处理
+- 支持多种图片格式（jpg, jpeg, png, gif, bmp, webp, tiff, tif）
+- 自动处理图片模式转换
+- 详细的处理日志和统计信息
+- 预览功能
+
+### 安装依赖
+
+```bash
+pip install -r requirements.txt
+```
+
+### 使用方法
+
+#### 方法1：直接运行主程序
+
+```bash
+python image_cropper.py
+```
+
+程序会提示您输入源目录和输出目录路径。
+
+#### 方法2：运行示例程序
+
+```bash
+python crop_example.py
+```
+
+可以选择不同的使用模式：
+- 示例模式（使用预设路径）
+- 自定义批量裁剪
+- 预览裁剪效果
+- 单张图片裁剪
+
+#### 方法3：作为模块导入
+
+```python
+from image_cropper import ImageCropper
+
+# 创建裁剪器
+cropper = ImageCropper(target_width=1080, target_height=1920)
+
+# 批量裁剪
+stats = cropper.batch_crop_images("源目录", "输出目录")
+
+# 单张图片裁剪
+success = cropper.crop_image("输入图片.jpg", "输出图片.jpg")
+
+# 预览裁剪效果
+cropper.preview_crop("图片.jpg")
+```
+
+### 主要方法
+
+#### 1. batch_crop_images()
+批量裁剪图片
+
+```python
+stats = cropper.batch_crop_images("源目录", "输出目录")
+print(f"成功: {stats['success']} 张")
+print(f"失败: {stats['failed']} 张")
+```
+
+#### 2. crop_image()
+裁剪单张图片
+
+```python
+success = cropper.crop_image("input.jpg", "output.jpg")
+```
+
+#### 3. preview_crop()
+预览裁剪效果
+
+```python
+cropper.preview_crop("image.jpg")
+```
+
+### 裁剪逻辑
+
+1. **水平居中**：以图片水平方向的中间位置为中心
+2. **垂直裁剪**：从图片顶部开始裁剪1920像素高度
+3. **边界处理**：如果裁剪框超出图片边界，会自动调整
+4. **尺寸检查**：会检查原图是否满足最小尺寸要求
+
+### 支持的图片格式
+
+- JPEG: .jpg, .jpeg
+- PNG: .png
+- GIF: .gif
+- BMP: .bmp
+- WebP: .webp
+- TIFF: .tiff, .tif
+
+### 文件说明
+
+- `image_cropper.py` - 主要的图片裁剪器类
+- `crop_example.py` - 使用示例
+- `requirements.txt` - 依赖包列表
+- `README.md` - 说明文档
+
+### 注意事项
+
+1. 确保原图尺寸满足要求（宽度≥1080，高度≥1920）
+2. 输出目录会自动创建（如果不存在）
+3. 裁剪后的图片会添加"_cropped"后缀
+4. 支持批量处理大量图片
+5. 处理过程中会显示详细进度
+
+### 错误处理
+
+程序包含完善的错误处理机制：
+- 图片格式检查
+- 尺寸验证
+- 文件权限检查
+- 异常捕获和日志记录
+
+---
+
+## 图片路径读取器
+
+### 功能特性
+
+- 支持多种图片格式
 - 递归搜索子目录
 - 按扩展名筛选图片
 - 使用通配符模式搜索
@@ -12,141 +146,16 @@
 - 保存路径列表到文件
 - 详细的日志记录
 
-## 使用方法
-
-### 方法1：直接运行主程序
-
-```bash
-python image_reader.py
-```
-
-程序会提示您输入目录路径和搜索模式。
-
-### 方法2：运行示例程序
-
-```bash
-python example_usage.py
-```
-
-可以选择示例模式或自定义模式。
-
-### 方法3：作为模块导入
+### 使用方法
 
 ```python
 from image_reader import ImageReader
 
-# 创建图片读取器
 reader = ImageReader()
-
-# 获取所有图片路径
-image_paths = reader.get_image_paths("C:/Pictures", recursive=True)
-
-# 打印结果
-for path in image_paths:
-    print(path)
-
-# 保存到文件
-reader.save_paths_to_file(image_paths, 'my_images.txt')
+image_paths = reader.get_image_paths("目录路径", recursive=True)
 ```
 
-## 主要方法
-
-### 1. get_image_paths()
-获取指定目录下的所有图片路径
-
-```python
-# 递归搜索所有子目录
-image_paths = reader.get_image_paths("C:/Pictures", recursive=True)
-
-# 只搜索当前目录
-image_paths = reader.get_image_paths("C:/Pictures", recursive=False)
-```
-
-### 2. get_image_paths_by_extensions()
-按扩展名筛选图片
-
-```python
-# 只获取JPG和PNG图片
-jpg_png_paths = reader.get_image_paths_by_extensions(
-    "C:/Pictures", 
-    extensions=['.jpg', '.jpeg', '.png'], 
-    recursive=True
-)
-```
-
-### 3. get_image_paths_by_pattern()
-使用通配符模式搜索
-
-```python
-# 搜索所有JPG图片
-jpg_paths = reader.get_image_paths_by_pattern(
-    "C:/Pictures", 
-    pattern="*.jpg", 
-    recursive=True
-)
-
-# 搜索特定前缀的图片
-prefix_paths = reader.get_image_paths_by_pattern(
-    "C:/Pictures", 
-    pattern="IMG_*", 
-    recursive=True
-)
-```
-
-### 4. get_image_info()
-获取图片文件的详细信息
-
-```python
-image_info = reader.get_image_info(image_paths)
-
-for info in image_info:
-    print(f"文件名: {info['filename']}")
-    print(f"路径: {info['path']}")
-    print(f"大小: {info['size_mb']} MB")
-    print(f"扩展名: {info['extension']}")
-    print(f"创建时间: {info['created_time']}")
-    print(f"修改时间: {info['modified_time']}")
-```
-
-### 5. save_paths_to_file()
-保存图片路径到文件
-
-```python
-reader.save_paths_to_file(image_paths, 'image_list.txt')
-```
-
-## 支持的图片格式
-
-- JPEG: .jpg, .jpeg, .jfif, .pjpeg, .pjp
-- PNG: .png
-- GIF: .gif
-- BMP: .bmp
-- WebP: .webp
-- SVG: .svg
-- ICO: .ico
-- TIFF: .tiff, .tif
-- AVIF: .avif
-
-## 文件说明
-
-- `image_reader.py` - 主要的图片路径读取器类
-- `example_usage.py` - 使用示例
-- `README.md` - 说明文档
-
-## 注意事项
-
-1. 路径支持相对路径和绝对路径
-2. 递归搜索可能会比较慢，特别是对于包含大量文件的目录
-3. 文件大小以字节为单位，MB为计算值
-4. 时间戳为Unix时间戳格式
-
-## 错误处理
-
-程序包含完善的错误处理机制：
-- 目录不存在检查
-- 文件访问权限检查
-- 路径有效性验证
-- 异常捕获和日志记录
+详细使用方法请参考之前的文档。
 
 ## 许可证
 
